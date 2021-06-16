@@ -1,0 +1,11 @@
+database: demo
+
+views:
+  summary:
+    table: summary_table
+  visits:
+    table: visits_table
+  e_cheques:
+    table: e_cheques_table
+  p_cheques:
+    table: p_cheques_table
