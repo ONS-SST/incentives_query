@@ -26,8 +26,8 @@ def define_summary_schema():
 
 def define_visits_schema():
     return lambda: {
-        'ons_household_id': _('random.custom_code', mask='COV 00000000000#', digit='#'),
-        'participant_id': _('random.custom_code', mask='DHR-0000000000##', digit='#'),
+        'ons_household_id': _('random.custom_code', mask='COV 0000000000##', digit='#'),
+        'participant_id': _('random.custom_code', mask='DHR-000000000###', digit='#'),
         'fullname': _('person.full_name'),
         'visit_date': _('datetime.formatted_datetime', fmt="%Y-%m-%d", start=1800, end=1802),
         'visit_type': _('choice', items=["First Visit", "Follow-up Visit"]),
@@ -36,18 +36,18 @@ def define_visits_schema():
 
 def define_e_cheques_schema():
     return lambda: {
-        'ons_household_id': _('random.custom_code', mask='COV 00000000000#', digit='#'),
-        'participant_id': _('random.custom_code', mask='DHR-0000000000##', digit='#'),
+        'ons_household_id': _('random.custom_code', mask='COV 0000000000##', digit='#'),
+        'participant_id': _('random.custom_code', mask='DHR-000000000###', digit='#'),
         'recipient_name': _('person.full_name'),
         'cheque_number': _('random.custom_code', mask='########', digit='#'),
-        'value_issued': _('random.randints', amount=1, max=100)[0]
+        'value_issued': _('random.randints', amount=1, max=100)[0],
         'date_issued': _('datetime.formatted_datetime', fmt="%Y-%m-%d", start=1800, end=1802),
     }
 
 def define_p_cheques_schema():
     return lambda: {
-        'ons_household_id': _('random.custom_code', mask='COV 00000000000#', digit='#'),
-        'participant_id': _('random.custom_code', mask='DHR-0000000000##', digit='#'),
+        'ons_household_id': _('random.custom_code', mask='COV 0000000000##', digit='#'),
+        'participant_id': _('random.custom_code', mask='DHR-000000000###', digit='#'),
         'recipient_name': _('person.full_name'),
         'full_name': _('person.full_name'),
         'order_no': _('random.custom_code', mask='########', digit='#'),
@@ -70,7 +70,7 @@ def generate_temp_table(session: SparkSession, schema_definition: Callable, name
     df.createOrReplaceTempView(name)
     
 def generate_demo_tables(session: SparkSession):
-    generate_temp_table(session, define_summary_schema(), "summary", 100)
+    generate_temp_table(session, define_summary_schema(), "summary", 500)
     generate_temp_table(session, define_visits_schema(), "visits", 500)
     generate_temp_table(session, define_e_cheques_schema(), "e_cheques", 500)
     generate_temp_table(session, define_p_cheques_schema(), "p_cheques", 500)
