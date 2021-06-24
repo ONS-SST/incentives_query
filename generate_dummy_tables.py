@@ -40,7 +40,7 @@ def define_e_cheques_schema():
         'participant_id': _('random.custom_code', mask='DHR-0000000000##', digit='#'),
         'recipient_name': _('person.full_name'),
         'cheque_number': _('random.custom_code', mask='########', digit='#'),
-        'value_issued': _('random.custom_code', mask='########', digit='#'),
+        'value_issued': _('random.randints', amount=1, max=100)[0]
         'date_issued': _('datetime.formatted_datetime', fmt="%Y-%m-%d", start=1800, end=1802),
     }
 
@@ -52,7 +52,7 @@ def define_p_cheques_schema():
         'full_name': _('person.full_name'),
         'order_no': _('random.custom_code', mask='########', digit='#'),
         'date_issued': _('datetime.formatted_datetime', fmt="%Y-%m-%d", start=1800, end=1802),
-        'value': _('random.randints', amount=1)[0]
+        'value': _('random.randints', amount=1, max=100)[0]
     }
 
 def schema_to_dataframe(session: SparkSession, schema_definition: Callable, num_records: int):
