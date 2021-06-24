@@ -58,7 +58,6 @@ def get_base_query(table_name, name_field, household_id, participant_id, full_na
     if participant_id is not None:
         where_statements.append(f'participant_id = "{participant_id}"')
     if len(full_name) > 2:
-        print(full_name)
         where_statements.append(f'LOWER({name_field}) LIKE "%{full_name.lower()}%"')
     return query, where_statements
 
