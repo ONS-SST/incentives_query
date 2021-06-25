@@ -105,7 +105,8 @@ app.layout = html.Div([
         value = "",
         style={"width": "15rem", 'height': "1.5rem", "display": "block", 'margin': "0.75rem 0rem"}
     ),
-    html.Button('Export to Excel', id='submit-val', style={"display": "block", 'margin': "0.75rem 0rem"}),
+    html.Button('Export to Excel', id='export-button', style={"display": "block", 'margin': "0.75rem 0rem"}),
+    html.Div(id="export-text", style={"display": "block", 'margin': "0.75rem 0rem"}),
     html.H2('Data'),
     dcc.Tabs([
             dcc.Tab(label='Summary', children=[table_tab_by_name("summary")]),
@@ -164,6 +165,26 @@ def update_pcheques_table(household_id, participant_id, full_name, cheque_number
         if cheque_number:
             where_statements.append(f'order_no = "{cheque_number}"')
         return query_table(query, where_statements)
+
+@app.callback(
+    Output(component_id="export-text", component_property="children"),
+    Input(component_id='export-button', component_property='n_clicks'),
+    Input(component_id='summary-table', component_property='data'),
+    Input(component_id='visits-table', component_property='data'),
+    Input(component_id='e_cheques-table', component_property='data'),
+    Input(component_id='p_cheques-table', component_property='data')
+)
+def write_excel_query(button, summary, visits, e_cheques, p_cheques):
+    last_clicked = [p['prop_id'] for p in dash.callback_context.triggered][0]
+    if 'export-button' in last_clicked:
+        tables = {"Summary": summary, "Visits": visits, "eCheques": e_cheques, "pCheques": p_cheques}
+        sheets = {sheet: pd.DataFrame.from_dict(data) for sheet, data in tables.items()}
+        filename = 'output.xlsx'
+        with pd.ExcelWriter(filename) as writer:
+            for sheet, df in sheets.items():
+                df.to_excel(writer, sheet_name=sheet, index=False)
+        return html.Div(f"{filename} exported.")
+
 
 if __name__ == '__main__':
     port = os.environ.get("CDSW_PUBLIC_PORT")
